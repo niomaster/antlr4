@@ -1000,3 +1000,27 @@ initValue(typeName) ::= <<
 >>
 
 codeFileExtension() ::= ".java"
+
+ExtractorsFile(file, rules) ::= <<
+<fileHeader(file.grammarFileName, file.ANTLRVersion)>
+<if(file.genPackage)>
+package <file.genPackage>
+
+<endif>
+import scala.collection.mutable
+import <file.name>._
+import org.antlr.v4.runtime.Token._
+
+object <file.name>Patterns {
+<rules; separator="\n\n">
+}
+>>
+
+ExtractorsRule(rule, alts) ::= <<
+<alts; separator="\n\n">
+>>
+
+ExtractorsAlt(alt) ::= <<
+object <alt.name> {
+<alt.text>}
+>>

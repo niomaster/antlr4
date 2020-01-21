@@ -448,6 +448,12 @@ public abstract class Target {
 		return listenerName+extST.render();
 	}
 
+	public String getExtractorsFileName(boolean header) {
+	  assert gen.g.name != null;
+	  String listenerName = gen.g.name + "Extractors";
+	  return listenerName + ".scala";
+	}
+
 	/**
 	 * Gets the maximum number of 16-bit unsigned integers that can be encoded
 	 * in a single segment of the serialized ATN.

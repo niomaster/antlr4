@@ -6,12 +6,8 @@
 
 package org.antlr.v4;
 
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ParserRuleReturnScope;
-import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.*;
+import org.antlr.runtime.tree.Tree;
 import org.antlr.v4.analysis.AnalysisPipeline;
 import org.antlr.v4.automata.ATNFactory;
 import org.antlr.v4.automata.LexerATNFactory;
@@ -41,12 +37,7 @@ import org.antlr.v4.tool.Grammar;
 import org.antlr.v4.tool.GrammarTransformPipeline;
 import org.antlr.v4.tool.LexerGrammar;
 import org.antlr.v4.tool.Rule;
-import org.antlr.v4.tool.ast.ActionAST;
-import org.antlr.v4.tool.ast.GrammarAST;
-import org.antlr.v4.tool.ast.GrammarASTErrorNode;
-import org.antlr.v4.tool.ast.GrammarRootAST;
-import org.antlr.v4.tool.ast.RuleAST;
-import org.antlr.v4.tool.ast.TerminalAST;
+import org.antlr.v4.tool.ast.*;
 import org.stringtemplate.v4.STGroup;
 
 import java.io.BufferedWriter;
@@ -112,6 +103,7 @@ public class Tool {
     public boolean log = false;
 	public boolean gen_listener = true;
 	public boolean gen_visitor = false;
+	public boolean gen_extractors = false;
 	public boolean gen_dependencies = false;
 	public String genPackage = null;
 	public Map<String, String> grammarOptions = null;
@@ -130,6 +122,8 @@ public class Tool {
 		new Option("gen_listener",                "-no-listener", "don't generate parse tree listener"),
 		new Option("gen_visitor",                 "-visitor", "generate parse tree visitor"),
 		new Option("gen_visitor",                 "-no-visitor", "don't generate parse tree visitor (default)"),
+		new Option("gen_extractors",				"-scala-extractor-objects", "generate scala extractor objects for context classes and force the use of alternative names for productions"),
+		new Option("gen_extractors",				"-no-scala-extractor-objects", "don't generate scala extractor objects for context classes (default)"),
 		new Option("genPackage",                  "-package", OptionArgType.STRING, "specify a package/namespace for the generated code"),
 		new Option("gen_dependencies",            "-depend", "generate file dependencies"),
 		new Option("",                            "-D<option>=value", "set/override a grammar-level option"),
@@ -566,6 +560,24 @@ public class Tool {
 		comes from.
 	 */
 	public Grammar createGrammar(GrammarRootAST ast) {
+		if(gen_extractors) {
+			// Force alt names for every rule production
+			Tree rules = ast.getChild(ast.getChildCount() - 1);
+			for(int i = 0; i < rules.getChildCount(); i++) {
+				Tree rule = rules.getChild(i);
+				Tree alts = rule.getChild(rule.getChildCount() - 1);
+
+				for(int j = 0; j < alts.getChildCount(); j++) {
+					AltAST alt = (AltAST) alts.getChild(j);
+
+					if(alt.altLabel == null) {
+						String ruleName = rule.getChild(0).getText();
+						alt.altLabel = new GrammarAST(new CommonToken(ANTLRParser.ID, ruleName + j));
+					}
+				}
+			}
+		}
+
 		final Grammar g;
 		if ( ast.grammarType==ANTLRParser.LEXER ) g = new LexerGrammar(this, ast);
 		else g = new Grammar(this, ast);

@@ -8,27 +8,7 @@ package org.antlr.v4.codegen;
 
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.v4.analysis.LeftRecursiveRuleAltInfo;
-import org.antlr.v4.codegen.model.Action;
-import org.antlr.v4.codegen.model.AltBlock;
-import org.antlr.v4.codegen.model.BaseListenerFile;
-import org.antlr.v4.codegen.model.BaseVisitorFile;
-import org.antlr.v4.codegen.model.Choice;
-import org.antlr.v4.codegen.model.CodeBlockForAlt;
-import org.antlr.v4.codegen.model.CodeBlockForOuterMostAlt;
-import org.antlr.v4.codegen.model.LabeledOp;
-import org.antlr.v4.codegen.model.LeftRecursiveRuleFunction;
-import org.antlr.v4.codegen.model.Lexer;
-import org.antlr.v4.codegen.model.LexerFile;
-import org.antlr.v4.codegen.model.ListenerFile;
-import org.antlr.v4.codegen.model.OutputModelObject;
-import org.antlr.v4.codegen.model.Parser;
-import org.antlr.v4.codegen.model.ParserFile;
-import org.antlr.v4.codegen.model.RuleActionFunction;
-import org.antlr.v4.codegen.model.RuleFunction;
-import org.antlr.v4.codegen.model.RuleSempredFunction;
-import org.antlr.v4.codegen.model.SrcOp;
-import org.antlr.v4.codegen.model.StarBlock;
-import org.antlr.v4.codegen.model.VisitorFile;
+import org.antlr.v4.codegen.model.*;
 import org.antlr.v4.codegen.model.decl.CodeBlock;
 import org.antlr.v4.misc.Utils;
 import org.antlr.v4.parse.ANTLRParser;
@@ -129,6 +109,11 @@ public class OutputModelController {
 	public OutputModelObject buildBaseVisitorOutputModel(boolean header) {
 		CodeGenerator gen = delegate.getGenerator();
 		return new BaseVisitorFile(delegate, gen.getBaseVisitorFileName(header));
+	}
+
+	public OutputModelObject buildExtractorsOutputModel(boolean header) {
+		CodeGenerator gen = delegate.getGenerator();
+		return new ExtractorsFile(delegate, gen.getExtractorsFileName(header));
 	}
 
 	public ParserFile parserFile(String fileName) {

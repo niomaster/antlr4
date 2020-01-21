@@ -118,6 +118,18 @@ public class CodeGenPipeline {
 					}
 				}
 			}
+			if ( g.tool.gen_extractors ) {
+				if(gen.getTarget().needsHeader()) {
+				  	ST extractors = gen.generateExtractors(true);
+				  	if (g.tool.errMgr.getNumErrors() == errorCount) {
+				  	  	gen.writeExtractors(extractors, true);
+					}
+				}
+				ST extractors = gen.generateExtractors(false);
+				if (g.tool.errMgr.getNumErrors() == errorCount) {
+				  	gen.writeExtractors(extractors, false);
+				}
+			}
 		}
 		gen.writeVocabFile();
 	}
