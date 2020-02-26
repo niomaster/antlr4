@@ -343,6 +343,10 @@ public class ExtractorsAlt extends OutputModelObject {
 		List<MiniGrammar> parts = new ArrayList<>();
 
 		for(Object child : ast.getChildren()) {
+			if(child instanceof ActionAST) {
+				continue; // Safely ignore all predicates and actions
+			}
+
 			Tree tree = (Tree) child;
 			MiniGrammar grammar = getMiniGrammar(tree);
 			if(grammar == null) {

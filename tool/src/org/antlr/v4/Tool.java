@@ -565,6 +565,7 @@ public class Tool {
 			Tree rules = ast.getChild(ast.getChildCount() - 1);
 			for(int i = 0; i < rules.getChildCount(); i++) {
 				Tree rule = rules.getChild(i);
+				if(!(rule instanceof RuleAST)) continue;
 				Tree alts = rule.getChild(rule.getChildCount() - 1);
 
 				for(int j = 0; j < alts.getChildCount(); j++) {
