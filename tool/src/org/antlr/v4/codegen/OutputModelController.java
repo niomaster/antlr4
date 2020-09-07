@@ -111,11 +111,6 @@ public class OutputModelController {
 		return new BaseVisitorFile(delegate, gen.getBaseVisitorFileName(header));
 	}
 
-	public OutputModelObject buildExtractorsOutputModel(boolean header) {
-		CodeGenerator gen = delegate.getGenerator();
-		return new ExtractorsFile(delegate, gen.getExtractorsFileName(header));
-	}
-
 	public ParserFile parserFile(String fileName) {
 		ParserFile f = delegate.parserFile(fileName);
 		for (CodeGeneratorExtension ext : extensions) f = ext.parserFile(f);

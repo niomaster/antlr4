@@ -133,9 +133,6 @@ public class CodeGenerator {
 	public ST generateBaseVisitor() { return generateBaseVisitor(false); }
 	public ST generateBaseVisitor(boolean header) { return walk(createController().buildBaseVisitorOutputModel(header), header); }
 
-	public ST generateExtractors() { return generateExtractors(false); }
-  	public ST generateExtractors(boolean header) { return walk(createController().buildExtractorsOutputModel(header), header); }
-
 	/** Generate a token vocab file with all the token names/types.  For example:
 	 *  ID=7
 	 *  FOR=8
@@ -188,8 +185,10 @@ public class CodeGenerator {
 		getTarget().genFile(g, outputFileST, getBaseVisitorFileName(header));
 	}
 
-	public void writeExtractors(ST extractors, boolean header) {
-	  	getTarget().genFile(g, extractors, getExtractorsFileName(header));
+	public void writeExtractors(Map<String, ST> extractors) {
+		for(Map.Entry<String, ST> entry : extractors.entrySet()) {
+			getTarget().genFile(g, entry.getValue(), entry.getKey());
+		}
 	}
 
 	public void writeVocabFile() {
@@ -230,7 +229,6 @@ public class CodeGenerator {
 	public String getVisitorFileName(boolean header) { return getTarget().getVisitorFileName(header); }
 	public String getBaseListenerFileName(boolean header) { return getTarget().getBaseListenerFileName(header); }
 	public String getBaseVisitorFileName(boolean header) { return getTarget().getBaseVisitorFileName(header); }
-	public String getExtractorsFileName(boolean header) { return getTarget().getExtractorsFileName(header); }
 
 	/** What is the name of the vocab file generated for this grammar?
 	 *  Returns null if no .tokens file should be generated.

@@ -5,6 +5,7 @@
  */
 package org.antlr.v4.codegen;
 
+import org.antlr.v4.codegen.model.extractors.Extractors;
 import org.antlr.v4.parse.ANTLRParser;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.tool.ErrorType;
@@ -119,16 +120,7 @@ public class CodeGenPipeline {
 				}
 			}
 			if ( g.tool.gen_extractors ) {
-				if(gen.getTarget().needsHeader()) {
-				  	ST extractors = gen.generateExtractors(true);
-				  	if (g.tool.errMgr.getNumErrors() == errorCount) {
-				  	  	gen.writeExtractors(extractors, true);
-					}
-				}
-				ST extractors = gen.generateExtractors(false);
-				if (g.tool.errMgr.getNumErrors() == errorCount) {
-				  	gen.writeExtractors(extractors, false);
-				}
+				Extractors.writeExtractors(gen);
 			}
 		}
 		gen.writeVocabFile();
