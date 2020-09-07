@@ -57,7 +57,7 @@ Edit the repository looking for 4.5 or whatever and update it. Bump version in t
  * runtime/Python3/src/antlr4/Recognizer.py
  * runtime/CSharp/runtime/CSharp/Antlr4.Runtime/Properties/AssemblyInfo.cs
  * runtime/CSharp/runtime/CSharp/Antlr4.Runtime/Antlr4.Runtime.dotnet.csproj
- * runtime/JavaScript/src/antlr4/package.json
+ * runtime/JavaScript/package.json
  * runtime/JavaScript/src/antlr4/Recognizer.js
  * runtime/Cpp/VERSION
  * runtime/Cpp/runtime/src/RuntimeMetaData.cpp
@@ -65,6 +65,8 @@ Edit the repository looking for 4.5 or whatever and update it. Bump version in t
  * runtime/Cpp/demo/generate.cmd
  * runtime/Go/antlr/recognizer.go
  * runtime/Swift/Antlr4/org/antlr/v4/runtime/RuntimeMetaData.swift
+ * runtime/Dart/lib/src/runtime_meta_data.dart
+ * runtime/Dart/pubspec.yaml
  * tool/src/org/antlr/v4/codegen/target/GoTarget.java
  * tool/src/org/antlr/v4/codegen/target/CppTarget.java
  * tool/src/org/antlr/v4/codegen/target/CSharpTarget.java
@@ -277,16 +279,14 @@ git push origin gh-pages
 ### JavaScript
 
 ```bash
-cd runtime/JavaScript/src
-zip -r /tmp/antlr-javascript-runtime-4.8.zip antlr4
-cp /tmp/antlr-javascript-runtime-4.8.zip ~/antlr/sites/website-antlr4/download
+cd runtime/JavaScript
 # git add, commit, push
 ```
 
 **Push to npm**
 
 ```bash
-cd runtime/JavaScript/src
+cd runtime/JavaScript
 npm login
 npm publish antlr4
 ```
@@ -294,11 +294,8 @@ npm publish antlr4
 Move target to website
 
 ```bash
-pushd ~/antlr/sites/website-antlr4/download
-git add antlr-javascript-runtime-4.8.zip
-git commit -a -m 'update JS runtime'
-git push origin gh-pages
-popd
+npm run build
+cp /dist/antlr4.js ~/antlr/sites/website-antlr4/download
 ```
 
 ### CSharp
@@ -446,6 +443,19 @@ git commit -a -m 'update C++ runtime'
 git push origin gh-pages
 popd
 ```
+
+### Dart
+
+Push to pub.dev
+
+```bash
+cd runtime/Dart
+pub publish
+```
+
+It will warn that no change log found for the new version.
+If there are changes relevant to dart in this release, edit [CHANGELOG.md](https://github.com/antlr/antlr4/blob/master/runtime/Dart/CHANGELOG.md) to describe the changes.
+Otherwise enter `N` to ignore the warning.
 
 ## Update javadoc for runtime and tool
 
