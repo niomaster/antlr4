@@ -348,6 +348,12 @@ public class ExtractorsAlt extends OutputModelObject {
 			}
 
 			Tree tree = (Tree) child;
+
+			// Ignore settings like "<assoc=right>"
+			if (tree.getType() == ANTLRParser.ELEMENT_OPTIONS) {
+				continue;
+			}
+
 			MiniGrammar grammar = getMiniGrammar(tree);
 			if(grammar == null) {
 				return null;
