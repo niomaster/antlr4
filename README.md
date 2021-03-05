@@ -29,3 +29,14 @@ expr : expr '+' expr # expr1
 Furthermore, this approach builds on the target for Java by adding the extractors to that target. As we can't alter the generated context classes after the fact, the `unapply` methods are defined in a similarly named class, but not the same class. The file with the extractor objects is called `GrammarNameParserPatterns.scala`. The extractors are named the same as the alternatives, so as with the example above the context `<rule.upper>Context` can be destructured with `<rule.upper>0` and `<rule.upper>1`.
 
 Finally it is important to note that currently we can't destructure arbitrary eBNF patterns in rule productions, but you will be warned of this fact.
+
+# Compiling
+
+How to use this fork, for example, to compile VerCors' Java grammar:
+
+1. Run `mvn install -DskipTests=true -f pom.xml`. This will compile the fork into a jar.
+2. Use the jar to compile the grammar: 
+```bash
+[user@pc ~/antlr4/tool/target]
+$ java -jar antlr4-4.8-2-SNAPSHOT-complete.jar -scala-extractor-objects -lib ~/vercors/parsers/lib/antlr4/  ~/vercors/parsers/src/main/antlr4/JavaParser.g4
+```
