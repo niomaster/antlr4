@@ -4,6 +4,7 @@ import org.antlr.runtime.tree.Tree;
 import org.antlr.v4.codegen.OutputModelFactory;
 import org.antlr.v4.misc.Utils;
 import org.antlr.v4.parse.ANTLRParser;
+import org.antlr.v4.parse.ToolANTLRParser;
 import org.antlr.v4.tool.ast.*;
 
 import java.util.*;
@@ -339,6 +340,32 @@ public class ExtractorsAlt extends OutputModelObject {
 		this.text += "  }\n";
 	}
 
+	public static Map<String, String> extractElementOptions(Tree tree) {
+		if (tree.getType() != ANTLRParser.ELEMENT_OPTIONS) {
+			throw new IllegalArgumentException("Tree can only be of type ELEMENT_OPTIONS");
+		}
+
+		Map<String, String> opts = new HashMap<>();
+
+		for (int i = 0; i < tree.getChildCount(); i++) {
+			Tree child = tree.getChild(i);
+			if (child.getType() != ANTLRParser.ASSIGN) {
+				throw new IllegalArgumentException("Unexpected ELEMENT_OPTIONS structure");
+			}
+			if (child.getChildCount() != 2) {
+				throw new IllegalArgumentException("Unexpected ELEMENT_OPTIONS structure");
+			}
+
+			Tree key = child.getChild(0);
+			Tree value = child.getChild(1);
+
+			// Assuming that calling toString() on the key/value trees yields a readable/useable string also for complex values like multiline strings and integers.
+			opts.put(key.toString(), value.toString());
+		}
+
+		return opts;
+	}
+
 	public static ExtractorsAlt createFromAltAST(OutputModelFactory factory, AltAST ast, String label) {
 		List<MiniGrammar> parts = new ArrayList<>();
 
@@ -348,6 +375,17 @@ public class ExtractorsAlt extends OutputModelObject {
 			}
 
 			Tree tree = (Tree) child;
+
+			// Ignore settings like "<assoc=right>"
+			if (tree.getType() == ANTLRParser.ELEMENT_OPTIONS) {
+				Map<String, String> opts = extractElementOptions(tree);
+				if (opts.size() == 1 && opts.keySet().contains("assoc")) {
+					continue;
+				} else {
+					throw new IllegalArgumentException("Only grammar option allowed is assoc");
+				}
+			}
+
 			MiniGrammar grammar = getMiniGrammar(tree);
 			if(grammar == null) {
 				return null;
